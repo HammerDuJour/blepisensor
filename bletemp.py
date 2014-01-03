@@ -33,6 +33,16 @@ def calcTmpTarget(objT, ambT):
     
     
 def bleTemp(bluetooth_adr, interval=1):
+    # csvfile = r'D:\GIST\Personal\Dropbox\amazon.csv'
+	
+	# define a file for storing the results
+	# add code here to automatically detect the sensor
+	# sudo hciconfig hci0 up
+	# sudo hcitool lescan
+	# use pexpect to capture the MAC ADDRESS
+	# ctrl c
+	# sudo hcitool lecc <MAC ADDRESS>
+	
     tool = pexpect.spawn('gatttool -b ' + bluetooth_adr + ' --interactive')
     tool.expect('\[LE\]>')
     #print "Preparing to connect. You might need to press the side button"
@@ -56,6 +66,12 @@ def bleTemp(bluetooth_adr, interval=1):
         ambT = floatfromhex(rval[4] + rval[3])
         print rval
         calcTmpTarget(objT,ambT)
+		
+		# today = date.today().strftime("%x")
+		# f= open(csvfile,"a")
+		# f.write("\""+today+"\",\""+title+"\",\""+price+"\"\n")
+		# f.close()
+
     
 
 def main():
