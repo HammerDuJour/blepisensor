@@ -3,6 +3,12 @@ blepisensor
 
 Acquire, log, and publish sensor data over BLE with the Raspberry Pi
 
+Dependencies 
+- bluez 5.4 or higher
+- pexpect
+
+Building bluez
+==============
 This depends on having the correct build of bluez to get the right gatttool version. 
 You need a kernel version higher than 3.5.
 
