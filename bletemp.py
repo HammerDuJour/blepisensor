@@ -1,6 +1,7 @@
 import pexpect
 import sys
 import time
+import datetime
 
 def floatfromhex(h):
     t = float.fromhex(h)
@@ -33,6 +34,9 @@ def calcTmpTarget(objT, ambT):
     
     
 def bleTemp(bluetooth_adr, interval=1):
+
+    csvfile = r'testfile.csv'
+    
     tool = pexpect.spawn('gatttool -b ' + bluetooth_adr + ' --interactive')
     tool.expect('\[LE\]>')
     #print "Preparing to connect. You might need to press the side button"
@@ -54,10 +58,15 @@ def bleTemp(bluetooth_adr, interval=1):
         #print "printing rval"
         objT = floatfromhex(rval[2] + rval[1])
         ambT = floatfromhex(rval[4] + rval[3])
-        print rval
-        calcTmpTarget(objT,ambT)
-    
-
+        #print rval
+        temp = calcTmpTarget(objT,ambT)
+        timestamp = datetime.datetime.now().strftime("%y-%m-%d-%H:%M:%S")
+        print timestamp
+        
+        f = open(csvfile,"a")
+        f.write("\""+timestamp+"\",\""+str(temp)+"\"\n")
+        f.close()
+        
 def main():
     if (len(sys.argv) == 2):
         bleTemp(sys.argv[1])
