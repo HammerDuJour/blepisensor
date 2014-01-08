@@ -3,6 +3,10 @@ import sys
 import time
 import datetime
 
+csvfile = r'testfile.csv'
+#set this empty to turn off logging:
+logfile = r'pexpect.log'
+
 def floatfromhex(h):
     t = float.fromhex(h)
     if t > float.fromhex('7FFF'):
@@ -31,41 +35,60 @@ def calcTmpTarget(objT, ambT):
     print tObj
     return tObj
     
+def saveData(hexStr):
+    #print "after expect"
+    rval = hexStr.split()
+    #print "printing rval"
+    objT = floatfromhex(rval[2] + rval[1])
+    ambT = floatfromhex(rval[4] + rval[3])
+    #print rval
+    temp = calcTmpTarget(objT,ambT)
+    timestamp = datetime.datetime.now().strftime("%y-%m-%d-%H:%M:%S")
+    print timestamp
     
-    
-def bleTemp(bluetooth_adr, interval=1):
+    f = open(csvfile,"a")
+    f.write("\"" + timestamp + "\",\"" + str(temp) + "\",\"" + str(ambT) + "\"\n")
+    f.close()
 
-    csvfile = r'testfile.csv'
-    
-    tool = pexpect.spawn('gatttool -b ' + bluetooth_adr + ' --interactive')
-    tool.expect('\[LE\]>')
-    #print "Preparing to connect. You might need to press the side button"
-    #print "send connect"
+def connect(tool):
     tool.sendline('connect')
     #print "test for success of connect"
-    tool.expect('\[LE\]>')
+    tool.expect('Connection successful')   
     #print "turn on temperature sensor"
     tool.sendline('char-write-cmd 0x29 01')
     tool.expect('\[LE\]>')
+
+    
+def bleTemp(bluetooth_adr, interval=1):
+
+    if logfile != '': 
+        lf = open(logfile, 'a')
+        tool = pexpect.spawn('gatttool -b ' + bluetooth_adr + ' --interactive',logfile=lf)
+    else:
+        tool = pexpect.spawn('gatttool -b ' + bluetooth_adr + ' --interactive')
+    
+    tool.expect('\[LE\]>')
+    #print "Preparing to connect. You might need to press the side button"
+    #print "send connect"
+    connect(tool)
+    
     while True:
         time.sleep(1)
         #print "poll for temperature"
         tool.sendline('char-read-hnd 0x25')
         #print "expect descriptor"
-        tool.expect('descriptor: .*')
-        #print "after expect"
-        rval = tool.after.split()
-        #print "printing rval"
-        objT = floatfromhex(rval[2] + rval[1])
-        ambT = floatfromhex(rval[4] + rval[3])
-        #print rval
-        temp = calcTmpTarget(objT,ambT)
-        timestamp = datetime.datetime.now().strftime("%y-%m-%d-%H:%M:%S")
-        print timestamp
-        
-        f = open(csvfile,"a")
-        f.write("\""+timestamp+"\",\""+str(temp)+"\"\n")
-        f.close()
+
+	index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
+        if index == 0:
+            saveData(tool.after)
+        elif index == 1:
+            connect(tool)
+        #elif index == 2 or index == 3:
+            #print 'pexpect died, eof or timeout'
+            #exit()
+
+    lf.close()    
+    
         
 def main():
     if (len(sys.argv) == 2):
