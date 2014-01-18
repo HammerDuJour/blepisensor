@@ -15,7 +15,7 @@ This depends on having the correct build of bluez to get the right gatttool vers
 
 Instructions below taken from [ mike.saunby.net](http://mike.saunby.net/2013/04/raspberry-pi-and-ti-cc2541-sensortag.html)
 
-*Check version of bluez with*
+*Check kernel version*
 
     uname -r
 
