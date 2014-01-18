@@ -48,10 +48,10 @@ Installing pexpect
 
 Download the package from sourceforge
 
-  wget http://pexpect.sourceforge.net/pexpect-2.3.tar.gz
+    wget http://pexpect.sourceforge.net/pexpect-2.3.tar.gz
 
 Extract and install the module
 
-  tar xzf pexpect-2.3.tar.gz
-  cd pexpect-2.3
-  sudo python ./setup.py install
+    tar xzf pexpect-2.3.tar.gz
+    cd pexpect-2.3
+    sudo python ./setup.py install
