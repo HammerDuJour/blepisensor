@@ -9,6 +9,13 @@ csvfile = r'testfile.csv'
 #set this empty to turn off logging:
 logfile = r'pexpect.log'
 
+def usage():
+    print 'blepisensor.py Usage:'
+    print '  blepisensor.py address [interval]'
+    print ''
+    print '  address    The address of the sensor to read.'
+    print '  interval   The reading interval in seconds.  Default is 1.'
+
 def floatfromhex(h):
     t = float.fromhex(h)
     if t > float.fromhex('7FFF'):
@@ -93,7 +100,10 @@ def bleTemp(bluetooth_adr, interval=1):
     
         
 def main():
-    if (len(sys.argv) == 2):
+    if (len(sys.argv) < 2):
+        print 'Too few arguments'
+        usage()
+    elif (len(sys.argv) == 2):
         bleTemp(sys.argv[1])
     else:
         bleTemp(sys.argv[1],sys.argv[2])

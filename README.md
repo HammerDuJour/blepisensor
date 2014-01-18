@@ -42,3 +42,16 @@ Instructions below taken from [ mike.saunby.net](http://mike.saunby.net/2013/04/
 *Then I even had to copy gatttool manually into the /usr/local/bin dir*
 
 	cp attrib/gatttool /usr/local/bin/
+
+Installing pexpect
+------------------
+
+Download the package from sourceforge
+
+  wget http://pexpect.sourceforge.net/pexpect-2.3.tar.gz
+
+Extract and install the module
+
+  tar xzf pexpect-2.3.tar.gz
+  cd pexpect-2.3
+  sudo python ./setup.py install
