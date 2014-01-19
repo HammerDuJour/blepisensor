@@ -55,3 +55,14 @@ Extract and install the module
     tar xzf pexpect-2.3.tar.gz
     cd pexpect-2.3
     sudo python ./setup.py install
+
+Running
+-------
+
+1. Run hciconfig to see that the BT device is present and determine the device name (hcix).
+    hciconfig
+1. Bring up the BT device (where x is the number of your device)
+    hciconfig hcix up
+1. Scan for BLE devices to determine their addresses
+    hcitool lescan
+
