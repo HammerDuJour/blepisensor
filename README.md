@@ -21,10 +21,10 @@ Instructions below taken from [ mike.saunby.net](http://mike.saunby.net/2013/04/
 
 *get a recent bluez version from http://www.bluez.org/*
 
-	wget https://www.kernel.org/pub/linux/bluetooth/bluez-5.4.tar.xz
+	wget http://www.kernel.org/pub/linux/bluetooth/bluez-5.12.tar.xz
 *extract*
 
-	tar xvf bluez-5.4.tar.xz
+	tar xvf bluez-5.12.tar.xz
 
 *get the necessary libs*
 
@@ -34,7 +34,7 @@ Instructions below taken from [ mike.saunby.net](http://mike.saunby.net/2013/04/
 
 *configure and build SW:*
 
-	cd bluez-5.4
+	cd bluez-5.12
 	./configure --disable-systemd
 	make
 	make install
