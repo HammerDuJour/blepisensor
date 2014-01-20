@@ -31,14 +31,14 @@ fi
 
 bluezver=$(dpkg-query -W bluez | awk '/bluez/ {print $NF;}')
 echo "We require the Linux Bluetooth protocol stack, bluez."
-echo "Tested with bluez version 5.4. You have $bluezver."
+echo "Tested with bluez version 5.12. You have $bluezver."
 echo "Building / installing bluez takes a loooong time on the Pi."
-read -p "Attempt to install / reinstall bluez 5.4? [Yy] " -r
+read -p "Attempt to install / reinstall bluez 5.12? [Yy] " -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-  wget -nc https://www.kernel.org/pub/linux/bluetooth/bluez-5.4.tar.xz
-  tar xvf bluez-5.4.tar.xz
+  wget -nc https://www.kernel.org/pub/linux/bluetooth/bluez-5.12.tar.xz
+  tar xvf bluez-5.12.tar.xz
   apt-get install libusb-dev libdbus-1-dev libglib2.0-dev automake libudev-dev libical-dev libreadline-dev
-  cd bluez-5.4
+  cd bluez-5.12
   ./configure --disable-systemd
   make
   make install
