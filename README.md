@@ -65,9 +65,9 @@ Running
 
 1. Bring up the BT device (where x is the number of your device)
 
-        hciconfig hcix up
+        sudo hciconfig hcix up
 
 1. Scan for BLE devices to determine their addresses
 
-        hcitool lescan
+        sudo hcitool lescan
 
