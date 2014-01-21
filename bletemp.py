@@ -67,7 +67,41 @@ def connect(tool):
     tool.sendline('char-write-cmd 0x29 01')
     tool.expect('\[LE\]>')
 
+def bleTempCollection(addresses, interval=1):
+
+    # create a collection of pexpect tools
+    for address in addresses:
+        if logfile != '': 
+            lf = open(logfile, 'a')
+            tool = pexpect.spawn('gatttool -b ' + bluetooth_adr + ' --interactive',logfile=lf)
+        else:
+            tool = pexpect.spawn('gatttool -b ' + bluetooth_adr + ' --interactive')		
+			
+    	tools.add(tool)
+		
+	#connect to each tool in the collection
+	for tool in tools
+	    tool.expect('\[LE\]>')
+        connect(tool)
     
+	#iterate over each tool in tools and retrieve temp data
+    while True:
+	    for tool in tools
+		    tool.sendline('char-read-hnd 0x25')
+            time.sleep(float(interval))
+			index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
+			
+            if index == 0:
+                saveData(tool.after)
+            elif index == 1:
+                connect(tool)
+            #elif index == 2 or index == 3:
+                #print 'pexpect died, eof or timeout'
+                #exit()
+
+    # will this crash if lf is not created ?
+	lf.close()        
+
 def bleTemp(bluetooth_adr, interval=1):
 
     if logfile != '': 
@@ -82,12 +116,12 @@ def bleTemp(bluetooth_adr, interval=1):
     connect(tool)
     
     while True:
-        time.sleep(1)
+        time.sleep(float(interval))
         #print "poll for temperature"
         tool.sendline('char-read-hnd 0x25')
         #print "expect descriptor"
 
-	index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
+	    index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
         if index == 0:
             saveData(tool.after)
         elif index == 1:
@@ -98,11 +132,13 @@ def bleTemp(bluetooth_adr, interval=1):
 
     lf.close()    
     
-        
+#TODO: cleanup usage and catch erroneous input in main
+	
 def main():
     if (len(sys.argv) < 2):
-        print 'Too few arguments'
-        usage()
+        # get mac addresses from file
+		macs = ['xx:xx:xx:xx' 'xx:xx:xx:xx' 'xx:xx:xx:xx' 'xx:xx:xx:xx']
+		bleTempColletion(macs)
     elif (len(sys.argv) == 2):
         bleTemp(sys.argv[1])
     else:
