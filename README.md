@@ -5,7 +5,7 @@ Acquire, log, and publish sensor data over BLE with the Raspberry Pi
 
 **Dependencies**
 
-* bluez 5.4 or higher
+* bluez 5.10 or higher (tested with 5.12)
 * pexpect
 
 Building bluez
