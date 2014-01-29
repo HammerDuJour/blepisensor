@@ -89,8 +89,8 @@ def bleTempCollection(addresses, interval=1):
         print "After Expect"
         connect(tool)
         print "After Connect"
-        tools.extend(tool)
-        print "tools added to tools"
+        tools.append(tool)
+        print "tool added to tools"
         
   
     #iterate over each tool in tools and retrieve temp data
