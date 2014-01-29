@@ -61,9 +61,9 @@ def saveData(hexStr):
 
 def connect(tool):
     tool.sendline('connect')
-    #print "test for success of connect"
+    print "test for success of connect"
     tool.expect('Connection successful')   
-    #print "turn on temperature sensor"
+    print "turn on temperature sensor"
     tool.sendline('char-write-cmd 0x29 01')
     tool.expect('\[LE\]>')
 
