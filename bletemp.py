@@ -69,27 +69,30 @@ def connect(tool):
 
 def bleTempCollection(addresses, interval=1):
 
+    tools = []
+    
     # create a collection of pexpect tools
     for address in addresses:
         if logfile != '': 
             lf = open(logfile, 'a')
-            tool = pexpect.spawn('gatttool -b ' + bluetooth_adr + ' --interactive',logfile=lf)
+            tool = pexpect.spawn('gatttool -b ' + address + ' --interactive',logfile=lf)
         else:
-            tool = pexpect.spawn('gatttool -b ' + bluetooth_adr + ' --interactive')		
+            tool = pexpect.spawn('gatttool -b ' + address + ' --interactive')		
 			
-    	tools.add(tool)
+    	tools.extend(tool)
 		
 	#connect to each tool in the collection
-	for tool in tools
+	for tool in tools:
 	    tool.expect('\[LE\]>')
         connect(tool)
     
-	#iterate over each tool in tools and retrieve temp data
+    #iterate over each tool in tools and retrieve temp data
     while True:
-	    for tool in tools
+	    for tool in tools:
 		    tool.sendline('char-read-hnd 0x25')
             time.sleep(float(interval))
-			index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
+            
+            index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
 			
             if index == 0:
                 saveData(tool.after)
@@ -99,8 +102,8 @@ def bleTempCollection(addresses, interval=1):
                 #print 'pexpect died, eof or timeout'
                 #exit()
 
-    # will this crash if lf is not created ?
-	lf.close()        
+        # will this crash if lf is not created ?
+    lf.close()        
 
 def bleTemp(bluetooth_adr, interval=1):
 
@@ -121,7 +124,7 @@ def bleTemp(bluetooth_adr, interval=1):
         tool.sendline('char-read-hnd 0x25')
         #print "expect descriptor"
 
-	    index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
+	index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
         if index == 0:
             saveData(tool.after)
         elif index == 1:
@@ -137,8 +140,8 @@ def bleTemp(bluetooth_adr, interval=1):
 def main():
     if (len(sys.argv) < 2):
         # get mac addresses from file
-		macs = ['xx:xx:xx:xx' 'xx:xx:xx:xx' 'xx:xx:xx:xx' 'xx:xx:xx:xx']
-		bleTempColletion(macs)
+		macs = ['BC:6A:29:AB:D5:92' 'BC:6A:29:AB:23:DA']
+		bleTempCollection(macs)
     elif (len(sys.argv) == 2):
         bleTemp(sys.argv[1])
     else:
