@@ -124,15 +124,15 @@ def bleTemp(bluetooth_adr, interval=1):
         tool = pexpect.spawn('gatttool -b ' + bluetooth_adr + ' --interactive')
     
     tool.expect('\[LE\]>')
-    #print "Preparing to connect. You might need to press the side button"
-    #print "send connect"
+    print "Preparing to connect. You might need to press the side button"
+    print "send connect"
     connect(tool)
     
     while True:
         time.sleep(float(interval))
-        #print "poll for temperature"
+        print "poll for temperature"
         tool.sendline('char-read-hnd 0x25')
-        #print "expect descriptor"
+        print "expect descriptor"
 
 	index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
         if index == 0:
