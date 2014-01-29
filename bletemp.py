@@ -85,8 +85,9 @@ def bleTempCollection(addresses, interval=1):
             tool = pexpect.spawn('gatttool -b ' + address + ' --interactive')		
 			
         tool.expect('\[LE\]>')
+        print "After Expect"
         connect(tool)
-        print "Expect OK"
+        print "After Connect"
     	tools.extend(tool)
     	print "tools added to tools"
 		
