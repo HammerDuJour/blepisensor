@@ -69,22 +69,31 @@ def connect(tool):
 
 def bleTempCollection(addresses, interval=1):
 
+    print "Create Tools Variable"
     tools = []
     
     # create a collection of pexpect tools
     for address in addresses:
+        print "address"
+        print address
         if logfile != '': 
+            print "Create tool with log file"
             lf = open(logfile, 'a')
             tool = pexpect.spawn('gatttool -b ' + address + ' --interactive',logfile=lf)
         else:
+            print "Create tool, No log file"
             tool = pexpect.spawn('gatttool -b ' + address + ' --interactive')		
 			
-    	tools.extend(tool)
-		
-	#connect to each tool in the collection
-	for tool in tools:
-	    tool.expect('\[LE\]>')
+        tool.expect('\[LE\]>')
         connect(tool)
+        print "Expect OK"
+    	tools.extend(tool)
+    	print "tools added to tools"
+		
+    #connect to each tool in the collection
+#    for tool in tools:
+#	tool.expect('\[LE\]>')
+#        connect(tool)
     
     #iterate over each tool in tools and retrieve temp data
     while True:
@@ -140,7 +149,7 @@ def bleTemp(bluetooth_adr, interval=1):
 def main():
     if (len(sys.argv) < 2):
         # get mac addresses from file
-		macs = ['BC:6A:29:AB:D5:92' 'BC:6A:29:AB:23:DA']
+		macs = ['BC:6A:29:AB:D5:92','BC:6A:29:AB:23:DA']
 		bleTempCollection(macs)
     elif (len(sys.argv) == 2):
         bleTemp(sys.argv[1])
