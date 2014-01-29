@@ -100,17 +100,14 @@ def bleTempCollection(addresses, interval=1):
     while True:
 	    print "Enter while loop"
 	    for tool in tools:
-		    print "entering for loop. Sendline"
-		    tool.sendline('char-read-hnd 0x25')
-			print "sleep"
+            print "entering for loop. Sendline"
+            tool.sendline('char-read-hnd 0x25')
+            print "sleep"
             time.sleep(float(interval))
-            
             print "getting index"
-			index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
-			
-			print "index"
-			print index
-			
+            index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
+            print "index"
+            print index
             if index == 0:
                 saveData(tool.after)
             elif index == 1:
