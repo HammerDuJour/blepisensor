@@ -82,20 +82,20 @@ def bleTempCollection(addresses, interval=1):
             tool = pexpect.spawn('gatttool -b ' + address + ' --interactive',logfile=lf)
         else:
             print "Create tool, No log file"
-            tool = pexpect.spawn('gatttool -b ' + address + ' --interactive')		
-			
+            tool = pexpect.spawn('gatttool -b ' + address + ' --interactive')        
+            
         tool.expect('\[LE\]>')
         print "After Expect"
         connect(tool)
         print "After Connect"
-    	tools.extend(tool)
-    	print "tools added to tools"
-		
+        tools.extend(tool)
+        print "tools added to tools"
+        
   
     #iterate over each tool in tools and retrieve temp data
     while True:
-	    print "Enter while loop"
-	    for tool in tools:
+        print "Enter while loop"
+        for tool in tools:
             print "entering for loop. Sendline"
             tool.sendline('char-read-hnd 0x25')
             print "sleep"
@@ -131,7 +131,7 @@ def bleTemp(bluetooth_adr, interval=1):
         tool.sendline('char-read-hnd 0x25')
         print "expect descriptor"
 
-	index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
+        index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
         if index == 0:
             saveData(tool.after)
         elif index == 1:
@@ -143,12 +143,12 @@ def bleTemp(bluetooth_adr, interval=1):
     lf.close()    
     
 #TODO: cleanup usage and catch erroneous input in main
-	
+    
 def main():
     if (len(sys.argv) < 2):
         # get mac addresses from file
-		macs = ['BC:6A:29:AB:D5:92','BC:6A:29:AB:23:DA']
-		bleTempCollection(macs)
+        macs = ['BC:6A:29:AB:D5:92','BC:6A:29:AB:23:DA']
+        bleTempCollection(macs)
     elif (len(sys.argv) == 2):
         bleTemp(sys.argv[1])
     else:
