@@ -91,11 +91,7 @@ def bleTempCollection(addresses, interval=1):
     	tools.extend(tool)
     	print "tools added to tools"
 		
-    #connect to each tool in the collection
-#    for tool in tools:
-#	tool.expect('\[LE\]>')
-#        connect(tool)
-    
+  
     #iterate over each tool in tools and retrieve temp data
     while True:
 	    print "Enter while loop"
@@ -112,11 +108,8 @@ def bleTempCollection(addresses, interval=1):
                 saveData(tool.after)
             elif index == 1:
                 connect(tool)
-            #elif index == 2 or index == 3:
-                #print 'pexpect died, eof or timeout'
-                #exit()
-
-        # will this crash if lf is not created ?
+                
+    # will this crash if lf is not created ?
     lf.close()        
 
 def bleTemp(bluetooth_adr, interval=1):
