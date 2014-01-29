@@ -60,6 +60,7 @@ def saveData(hexStr):
     f.close()
 
 def connect(tool):
+    print "Inside Connect: Sendline Connect"
     tool.sendline('connect')
     print "test for success of connect"
     tool.expect('Connection successful')   
