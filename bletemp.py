@@ -41,7 +41,7 @@ def calcTmpTarget(objT, ambT):
     tObj = pow(pow(Tdie2,4) + (fObj/S),.25)
     tObj = (tObj - 273.15)
     
-    print tObj
+    print(round(tObj,2))
     return tObj
     
 def saveData(hexStr):
@@ -53,7 +53,7 @@ def saveData(hexStr):
     #print rval
     temp = calcTmpTarget(objT,ambT)
     timestamp = datetime.datetime.now().strftime("%y-%m-%d-%H:%M:%S")
-    print timestamp
+    #print timestamp
     
     f = open(csvfile,"a")
     f.write("\"" + timestamp + "\",\"" + str(temp) + "\",\"" + str(ambT) + "\"\n")
@@ -68,10 +68,16 @@ def connect(tool):
     tool.sendline('char-write-cmd 0x29 01')
     tool.expect('\[LE\]>')
 
+class SensorTag:
+    def __init__(self,mac,control):
+        self.mac = mac
+        self.control = control
+
 def bleTempCollection(addresses, interval=1):
 
     print "Create Tools Variable"
     tools = []
+    SensorTags = []
     
     # create a collection of pexpect tools
     for address in addresses:
@@ -91,20 +97,23 @@ def bleTempCollection(addresses, interval=1):
         print "After Connect"
         tools.append(tool)
         print "tool added to tools"
-        
+        st = SensorTag(address,tool)
+        SensorTags.append(st)
   
     #iterate over each tool in tools and retrieve temp data
     while True:
-        print "Enter while loop"
-        for tool in tools:
-            print "entering for loop. Sendline"
+        #print "Enter while loop"
+        for sensorTag in SensorTags:
+            tool = sensorTag.control
+            #print "entering for loop. Sendline"
+            print(sensorTag.mac)
             tool.sendline('char-read-hnd 0x25')
-            print "sleep"
+            #print "sleep"
             time.sleep(float(interval))
-            print "getting index"
+            #print "getting index"
             index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
-            print "index"
-            print index
+            #print "index"
+            #print index
             if index == 0:
                 saveData(tool.after)
             elif index == 1:
@@ -123,7 +132,7 @@ def bleTemp(bluetooth_adr, interval=1):
     
     tool.expect('\[LE\]>')
     print "Preparing to connect. You might need to press the side button"
-    print "send connect"
+    #print "send connect"
     connect(tool)
     
     while True:
