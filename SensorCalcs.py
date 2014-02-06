@@ -24,4 +24,5 @@ def calcTmpTarget(objT, ambT):
     tObj = (tObj - 273.15)
    
     print(round(tObj,2))
+    print(round(m_tmpAmb,2))
     return tObj
