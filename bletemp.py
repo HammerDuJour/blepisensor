@@ -20,26 +20,20 @@ def usage():
 
   
 def saveData(hexStr):
-    #print "after expect"
     rval = hexStr.split()
-    #print "printing rval"
     objT = floatfromhex(rval[2] + rval[1])
     ambT = floatfromhex(rval[4] + rval[3])
-    #print rval
     temp = calcTmpTarget(objT,ambT)
     timestamp = datetime.datetime.now().strftime("%y-%m-%d-%H:%M:%S")
-    #print timestamp
     
     f = open(csvfile,"a")
     f.write("\"" + timestamp + "\",\"" + str(temp) + "\",\"" + str(ambT) + "\"\n")
     f.close()
 
 def connect(tool):
-    print "Inside Connect: Sendline Connect"
+    print "Connecting to Sensor Tag"
     tool.sendline('connect')
-    print "test for success of connect"
     tool.expect('Connection successful')   
-    print "turn on temperature sensor"
     tool.sendline('char-write-cmd 0x29 01')
     tool.expect('\[LE\]>')
 
@@ -51,8 +45,6 @@ def bleTempCollection(addresses, interval=1):
     
     # create a collection of pexpect tools
     for address in addresses:
-        print "address"
-        print address
         if logfile != '': 
             print "Create tool with log file"
             lf = open(logfile, 'a')
@@ -62,28 +54,19 @@ def bleTempCollection(addresses, interval=1):
             tool = pexpect.spawn('gatttool -b ' + address + ' --interactive')        
             
         tool.expect('\[LE\]>')
-        print "After Expect"
         connect(tool)
-        print "After Connect"
         tools.append(tool)
-        print "tool added to tools"
         st = SensorTag(address,tool)
         SensorTags.append(st)
   
     #iterate over each tool in tools and retrieve temp data
     while True:
-        #print "Enter while loop"
         for sensorTag in SensorTags:
             tool = sensorTag.control
-            #print "entering for loop. Sendline"
             print(sensorTag.mac)
             tool.sendline('char-read-hnd 0x25')
-            #print "sleep"
             time.sleep(float(interval))
-            #print "getting index"
             index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
-            #print "index"
-            #print index
             if index == 0:
                 saveData(tool.after)
             elif index == 1:
@@ -93,6 +76,9 @@ def bleTempCollection(addresses, interval=1):
     lf.close()        
     
 #TODO: cleanup usage and catch erroneous input in main
+#TODO: Create a DEbug() function and flag next time I need to debug
+#Wrap this thing in some UI code (maybe)
+
     
 def main():
     if (len(sys.argv) < 2):
@@ -106,3 +92,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
