@@ -33,7 +33,10 @@ def saveData(hexStr):
     f.write("\"" + timestamp + "\",\"" + str(temp) + "\",\"" + str(ambT) + "\"\n")
     f.close()
     
-    return temp
+    vals = {}
+    vals[0] = ambT
+    vals[1] = temp
+    return vals
 
 def connect(tool):
     print "Connecting to Sensor Tag"
@@ -50,31 +53,25 @@ def report_event(event):
         "EventWidgetId=" + str(event.widget), \
         "EventKeySymbol=" + str(event.keysym)      
         
-def measure():
-    vals = {}
-    vals[0] = randint(45,99)
-    vals[1] = randint(45,99)
-    return vals
-
 # UI Code
 class MyApp:
     def __init__(self, parent, addresses, interval):
         
         self.myParent = parent
-        self.myContainerConfig = Frame(parent, bg="black")
-        self.myContainerConfig.pack(side=LEFT)
         
         self.myContainerDisplay = Frame(parent)
         self.myContainerDisplay.pack()
         
+        # Holds the HEadings
         self.myContainer1 = Frame(self.myContainerDisplay)
         self.myContainer1.pack()
 
+        # First row of data
         self.myContainer2 = Frame(self.myContainerDisplay)
         self.myContainer2.pack()
 
         self.myContainer3 = Frame(self.myContainerDisplay)
-        self.myContainer3.pack()
+        #self.myContainer3.pack()
 
         self.myContainerN = Frame(self.myContainerDisplay)
         self.myContainerN.pack()
@@ -115,11 +112,12 @@ class MyApp:
                 index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
                 
                 if index == 0:
-                    temp = saveData(tool.after)
+                    temps = saveData(tool.after)
                 elif index == 1:
                     connect(tool)
                     
-                self.DataIR0["text"] = str(temp)
+                self.DataAmbient0["text"] = str(round(temps[0],2))
+                self.DataIR0["text"] = str(round(temps[1],2))
             
                 root.update()
             
@@ -129,19 +127,10 @@ class MyApp:
     def createWidgets(self):
         
         fontSettings=('Verdana', 18, 'bold')
-        widgetWidth = "14"
+        widgetWidth = "20"
         padding = "0"
         
-        # Config buttons
-        self.testButton = Button(self.myContainerConfig, width = "5")
-        self.testButton.pack()
-        self.testButton = Button(self.myContainerConfig, width = "5")
-        self.testButton.pack()
-        self.testButton = Button(self.myContainerConfig, width = "5")
-        self.testButton.pack()
-        self.testButton = Button(self.myContainerConfig, width = "5")
-        self.testButton.pack()
-                
+               
         # Labels
         self.LabelAddress = Label(self.myContainer1, text="Address", width=widgetWidth, font=fontSettings)
         self.LabelAmbient = Label(self.myContainer1, text="Ambient Temp", width=widgetWidth, padx = padding,font=fontSettings)
