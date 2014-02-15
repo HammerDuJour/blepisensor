@@ -80,7 +80,7 @@ class MyApp:
         self.myContainerN.pack()
         
         self.createWidgets()
-        self.getMeasurements(addresses)
+        self.getMeasurements(addresses, interval)
     
 
     def getMeasurements(self, addresses, interval):
