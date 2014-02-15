@@ -34,7 +34,7 @@ def saveData(hexStr):
     f.close()
     
     vals = {}
-    vals[0] = ambT
+    vals[0] = ambT/128
     vals[1] = temp
     return vals
 
