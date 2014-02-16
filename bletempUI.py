@@ -12,7 +12,7 @@ from random import randint
 csvfile = r'testfile.csv'
 #set this empty to turn off logging:
 logfile = r'pexpect.log'
-
+measureHumid = True
 
 def usage():
     print 'blepisensor.py Usage:'
@@ -38,12 +38,26 @@ def saveData(hexStr):
     vals[1] = temp
     return vals
 
+def getHumidity(hexStr):
+    rval = hexStr.split()
+    rawT = floatfromhex(rval[2] + rval[1])
+    rawH = floatfromhex(rval[4] + rval[3])
+    humid = calcHum(rawT, rawH)
+    
+    print "Humidity"
+    print humid[1]
+    return humid[1]
+
 def connect(tool):
     print "Connecting to Sensor Tag"
     tool.sendline('connect')
     tool.expect('Connection successful')   
     tool.sendline('char-write-cmd 0x29 01')
     tool.expect('\[LE\]>')
+
+    if (measureHumid):
+        tool.sendline('char-write-cmd 0x3C 01')
+        tool.expect('\[LE\]>')
 
 def report_event(event):
     event_name = {"2": "KeyPress", "4": "ButtonPress"}
@@ -107,8 +121,8 @@ class MyApp:
                 tool = sensorTag.control
                 self.DataAddress0["text"] = sensorTag.mac
                 
-                tool.sendline('char-read-hnd 0x25')
                 time.sleep(float(interval))
+                tool.sendline('char-read-hnd 0x25')
                 index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
                 
                 if index == 0:
@@ -118,6 +132,14 @@ class MyApp:
                     
                 self.DataAmbient0["text"] = str(round(temps[0],2))
                 self.DataIR0["text"] = str(round(temps[1],2))
+                
+                if measureHumid:
+                    tool.sendline('char-read-hnd 0x38')
+                    index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
+                    
+                    if index == 0:
+                        humid = getHumidity(tool.after)
+                        self.DataIR0["text"] = str(humid)
             
                 root.update()
             
@@ -185,6 +207,7 @@ class MyApp:
         
     
 addresses = ['BC:6A:29:AB:D5:92','BC:6A:29:AB:23:DA']
+descriptions = ['Tag 1','Tag 2']
        
 root = Tk()
 myapp = MyApp(root, addresses, 2)

@@ -26,3 +26,15 @@ def calcTmpTarget(objT, ambT):
     print(round(tObj,2))
     print(round(m_tmpAmb,2))
     return tObj
+
+#
+# Again from http://processors.wiki.ti.com/index.php/SensorTag_User_Guide#Gatt_Server
+#
+def calcHum(rawT, rawH):
+    # -- calculate temperature [deg C] --
+    t = -46.85 + 175.72/65536.0 * rawT
+
+    rawH = float(int(rawH) & ~0x0003); # clear bits [1..0] (status bits)
+    # -- calculate relative humidity [%RH] --
+    rh = -6.0 + 125.0/65536.0 * rawH # RH= -6 + 125 * SRH/2^16
+    return (t, rh)
