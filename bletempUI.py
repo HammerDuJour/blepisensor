@@ -183,9 +183,10 @@ class MyApp:
         self.HumidInfos = []
         
         for index in range(listLen):
-            self.AddressInfos[index] = Label(self.myContainer2, text="val", width=widgetWidth, padx = padding, font=fontSettings)
-            self.TempInfos[index] = Label(self.myContainer2, text="val", width=widgetWidth, padx = padding, font=fontSettings)
-            self.HumidInfos[index] = Label(self.myContainer2, text="val", width=widgetWidth, padx = padding, font=fontSettings)
+           
+            self.AddressInfos.append(Label(self.myContainer2, text="val", width=widgetWidth, padx = padding, font=fontSettings))
+            self.TempInfos.append(Label(self.myContainer2, text="val", width=widgetWidth, padx = padding, font=fontSettings))
+            self.HumidInfos.append(Label(self.myContainer2, text="val", width=widgetWidth, padx = padding, font=fontSettings))
             
             self.AddressInfos[index].pack()
             self.TempInfos[index].pack()
