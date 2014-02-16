@@ -90,7 +90,7 @@ class MyApp:
         self.myContainerN = Frame(self.myContainerDisplay)
         self.myContainerN.pack()
         
-        self.createWidgets()
+        self.createWidgets(len(addresses))
         self.getMeasurements(addresses, descriptions, interval)
     
 
@@ -119,9 +119,11 @@ class MyApp:
         
         while True:
             
+            sindex = 0
             for sensorTag in SensorTags:
                 tool = sensorTag.control
-                self.DataAddress0["text"] = sensorTag.description
+                #self.DataAddress0["text"] = sensorTag.description
+                self.AddressInfos[sindex]["text"] = sensorTag.description
                 
                 time.sleep(float(interval))
                 tool.sendline('char-read-hnd 0x25')
@@ -134,8 +136,10 @@ class MyApp:
                     
                 f = temps[0] * 9 / 5
                 f = f + 32    
-                self.DataAmbient0["text"] = str(round(f,2)) + " f"
-                self.DataIR0["text"] = str(round(temps[1],2))
+                #self.DataAmbient0["text"] = str(round(f,2)) + " f"
+                #self.DataIR0["text"] = str(round(temps[1],2))
+                self.TempInfos[sindex]["text"] = str(round(f,2)) + " f"
+                self.HumidInfos[sindex]["text"] = str(round(temps[1],2))
                 
                 # TODO: This meathod needs some cleanup. 
                 # The save and measure code is all wrapped together
@@ -145,14 +149,17 @@ class MyApp:
                     
                     if index == 0:
                         humid = getHumidity(tool.after)
-                        self.DataIR0["text"] = str(round(humid,2)) + " %RH"
+                        #self.DataIR0["text"] = str(round(humid,2)) + " %RH"
+                        self.HumidInfos[sindex]["text"] = str(round(humid,2)) + " %RH"
+
             
                 root.update()
+                sindex = sindex + 1
             
         lf.close()
                     
        
-    def createWidgets(self):
+    def createWidgets(self, listLen):
         
         fontSettings=('Verdana', 18, 'bold')
         widgetWidth = "20"
@@ -169,30 +176,39 @@ class MyApp:
         self.LabelAddress.pack(side=LEFT)
         self.LabelAmbient.pack(side=LEFT)
         self.LabelIR.pack(side=LEFT)
+        
+        
+        self.AddressInfos = []
+        self.TempInfos = []
+        self.HumidInfos = []
+        
+        for index in range(listLen):
+            self.AddressInfos[index] = Label(self.myContainer2, text="val", width=widgetWidth, padx = padding, font=fontSettings)
+            self.TempInfos[index] = Label(self.myContainer2, text="val", width=widgetWidth, padx = padding, font=fontSettings)
+            self.HumidInfos[index] = Label(self.myContainer2, text="val", width=widgetWidth, padx = padding, font=fontSettings)
+            
+            self.AddressInfos[index].pack()
+            self.TempInfos[index].pack()
+            self.HumidInfos[index].pack()
 
         # Data Values
-        self.DataAddress0 = Label(self.myContainer2, text="val", width=widgetWidth, padx = padding, font=fontSettings)
-        self.DataAmbient0 = Label(self.myContainer2, text="val", width=widgetWidth, padx = padding, font=fontSettings)
-        self.DataIR0 = Label(self.myContainer2, text="val", width=widgetWidth, padx = padding, font=fontSettings)
+        #self.DataAddress0 = Label(self.myContainer2, text="val", width=widgetWidth, padx = padding, font=fontSettings)
+        #self.DataAmbient0 = Label(self.myContainer2, text="val", width=widgetWidth, padx = padding, font=fontSettings)
+        #self.DataIR0 = Label(self.myContainer2, text="val", width=widgetWidth, padx = padding, font=fontSettings)
 
-        self.DataAddress1 = Label(self.myContainer3, text="val", width=widgetWidth, padx = padding, font=fontSettings)
-        self.DataAmbient1 = Label(self.myContainer3, text="val", width=widgetWidth, padx = padding, font=fontSettings)
-        self.DataIR1 = Label(self.myContainer3, text="val", width=widgetWidth, padx = padding, font=fontSettings)
+        #self.DataAddress1 = Label(self.myContainer3, text="val", width=widgetWidth, padx = padding, font=fontSettings)
+        #self.DataAmbient1 = Label(self.myContainer3, text="val", width=widgetWidth, padx = padding, font=fontSettings)
+        #self.DataIR1 = Label(self.myContainer3, text="val", width=widgetWidth, padx = padding, font=fontSettings)
         
-        self.DataAddress0.pack(side=LEFT)
-        self.DataAmbient0.pack(side=LEFT)
-        self.DataIR0.pack(side=LEFT)
+        #self.DataAddress0.pack(side=LEFT)
+        #self.DataAmbient0.pack(side=LEFT)
+        #self.DataIR0.pack(side=LEFT)
 
-        self.DataAddress1.pack(side=LEFT)
-        self.DataAmbient1.pack(side=LEFT)
-        self.DataIR1.pack(side=LEFT)
+        #self.DataAddress1.pack(side=LEFT)
+        #self.DataAmbient1.pack(side=LEFT)
+        #self.DataIR1.pack(side=LEFT)
         
         # Buttons
-        self.button1 = Button(self.myContainerN, text= "Measure", bg="Green")
-#        self.button1.pack(side=LEFT)
-        self.button1.bind("<Button-1>", self.button1Click)
-        self.button1.bind("<Return>", self.button1Click)
-        
         self.button2 = Button(self.myContainerN, text="Quit", bg="Red")
         self.button2.pack(side=RIGHT)
         self.button2.bind("<Button-1>", self.button2Click)
