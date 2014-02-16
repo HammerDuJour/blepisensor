@@ -139,7 +139,7 @@ class MyApp:
                     
                     if index == 0:
                         humid = getHumidity(tool.after)
-                        self.DataIR0["text"] = str(humid)
+                        self.DataIR0["text"] = str(round(humid,2))
             
                 root.update()
             
@@ -157,6 +157,9 @@ class MyApp:
         self.LabelAddress = Label(self.myContainer1, text="Address", width=widgetWidth, font=fontSettings)
         self.LabelAmbient = Label(self.myContainer1, text="Ambient Temp", width=widgetWidth, padx = padding,font=fontSettings)
         self.LabelIR = Label(self.myContainer1, text="IR Temp", width=widgetWidth, padx = padding, font=fontSettings)
+        
+        if measureHumid:
+            self.LabelIR["text"] = "Humidity"
 
         self.LabelAddress.pack(side=LEFT)
         self.LabelAmbient.pack(side=LEFT)
