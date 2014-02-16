@@ -91,7 +91,7 @@ class MyApp:
         self.myContainerN.pack()
         
         self.createWidgets()
-        self.getMeasurements(addresses, interval)
+        self.getMeasurements(addresses, descriptions, interval)
     
 
     def getMeasurements(self, addresses, descriptions, interval):
