@@ -113,7 +113,8 @@ class MyApp:
             tool.expect('\[LE\]>')
             connect(tool)
             tools.append(tool)
-            st = SensorTag(address,tool,descriptions[i++])
+            st = SensorTag(address,tool,descriptions[i])
+            i = i + 1
             SensorTags.append(st)
         
         while True:
