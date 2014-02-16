@@ -69,7 +69,7 @@ def report_event(event):
         
 # UI Code
 class MyApp:
-    def __init__(self, parent, addresses, interval):
+    def __init__(self, parent, addresses, descriptions, interval):
         
         self.myParent = parent
         
@@ -94,12 +94,13 @@ class MyApp:
         self.getMeasurements(addresses, interval)
     
 
-    def getMeasurements(self, addresses, interval):
+    def getMeasurements(self, addresses, descriptions, interval):
                
         tools = []
         SensorTags = []
         
         # create a collection of pexpect tools
+        i = 0;
         for address in addresses:
             if logfile != '':
                 print "Create tool with log file"
@@ -112,14 +113,14 @@ class MyApp:
             tool.expect('\[LE\]>')
             connect(tool)
             tools.append(tool)
-            st = SensorTag(address,tool)
+            st = SensorTag(address,tool,descriptions[i++])
             SensorTags.append(st)
         
         while True:
             
             for sensorTag in SensorTags:
                 tool = sensorTag.control
-                self.DataAddress0["text"] = sensorTag.mac
+                self.DataAddress0["text"] = sensorTag.description
                 
                 time.sleep(float(interval))
                 tool.sendline('char-read-hnd 0x25')
@@ -133,6 +134,8 @@ class MyApp:
                 self.DataAmbient0["text"] = str(round(temps[0],2))
                 self.DataIR0["text"] = str(round(temps[1],2))
                 
+                # TODO: This meathod needs some cleanup. 
+                # The save and measure code is all wrapped together
                 if measureHumid:
                     tool.sendline('char-read-hnd 0x38')
                     index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
@@ -213,6 +216,6 @@ addresses = ['BC:6A:29:AB:D5:92','BC:6A:29:AB:23:DA']
 descriptions = ['Tag 1','Tag 2']
        
 root = Tk()
-myapp = MyApp(root, addresses, 2)
+myapp = MyApp(root, addresses, descriptions, 2)
 root.mainloop()
         
