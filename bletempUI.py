@@ -132,7 +132,9 @@ class MyApp:
                 elif index == 1:
                     connect(tool)
                     
-                self.DataAmbient0["text"] = str(round(temps[0],2))
+                f = temps[0] * 9 / 5
+                f = f + 32    
+                self.DataAmbient0["text"] = str(round(f,2) + " f")
                 self.DataIR0["text"] = str(round(temps[1],2))
                 
                 # TODO: This meathod needs some cleanup. 
@@ -143,7 +145,7 @@ class MyApp:
                     
                     if index == 0:
                         humid = getHumidity(tool.after)
-                        self.DataIR0["text"] = str(round(humid,2))
+                        self.DataIR0["text"] = str(round(humid,2) + " %RH")
             
                 root.update()
             
@@ -156,7 +158,6 @@ class MyApp:
         widgetWidth = "20"
         padding = "0"
         
-               
         # Labels
         self.LabelAddress = Label(self.myContainer1, text="Address", width=widgetWidth, font=fontSettings)
         self.LabelAmbient = Label(self.myContainer1, text="Ambient Temp", width=widgetWidth, padx = padding,font=fontSettings)
@@ -177,11 +178,7 @@ class MyApp:
         self.DataAddress1 = Label(self.myContainer3, text="val", width=widgetWidth, padx = padding, font=fontSettings)
         self.DataAmbient1 = Label(self.myContainer3, text="val", width=widgetWidth, padx = padding, font=fontSettings)
         self.DataIR1 = Label(self.myContainer3, text="val", width=widgetWidth, padx = padding, font=fontSettings)
-
         
-        self.DataAddress0["text"] = "80:80:80:80"
-        self.DataAddress1["text"] = "80:80:80:DA"
-
         self.DataAddress0.pack(side=LEFT)
         self.DataAmbient0.pack(side=LEFT)
         self.DataIR0.pack(side=LEFT)
