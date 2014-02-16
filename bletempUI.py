@@ -134,7 +134,7 @@ class MyApp:
                     
                 f = temps[0] * 9 / 5
                 f = f + 32    
-                self.DataAmbient0["text"] = str(round(f,2) + " f")
+                self.DataAmbient0["text"] = str(round(f,2)) + " f"
                 self.DataIR0["text"] = str(round(temps[1],2))
                 
                 # TODO: This meathod needs some cleanup. 
@@ -145,7 +145,7 @@ class MyApp:
                     
                     if index == 0:
                         humid = getHumidity(tool.after)
-                        self.DataIR0["text"] = str(round(humid,2) + " %RH")
+                        self.DataIR0["text"] = str(round(humid,2)) + " %RH"
             
                 root.update()
             
