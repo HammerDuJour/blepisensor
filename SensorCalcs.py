@@ -27,6 +27,25 @@ def calcTmpTarget(objT, ambT):
     print(round(m_tmpAmb,2))
     return tObj
 
+def ambientTemp(hexStr):
+    rval = hexStr.split()
+    ambT = return (floatfromhex(rval[4] + rval[3]) / 128)
+
+def irTemp(hexStr):
+    rval = hexStr.split()
+    objT = floatfromhex(rval[2] + rval[1])
+    ambT = floatfromhex(rval[4] + rval[3])
+    temp = calcTmpTarget(objT,ambT)
+    return temp
+
+def humidity(hexStr):
+    rval = hexStr.split()
+    rawT = floatfromhex(rval[2] + rval[1])
+    rawH = floatfromhex(rval[4] + rval[3])
+    humid = calcHum(rawT, rawH)
+    
+    return humid[1]
+
 #
 # Again from http://processors.wiki.ti.com/index.php/SensorTag_User_Guide#Gatt_Server
 #
