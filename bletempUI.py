@@ -131,19 +131,19 @@ class MyApp:
                 
                 if index == 0:
                     hexStr = tool.after
-                    ambientTemp = ambientTemp(hexStr)
-                    irTemp = irTemp(hexStr)
+                    ambient = ambientTemp(hexStr)
+                    ir = irTemp(hexStr)
                 elif index == 1:
                     connect(tool)
                     
-                f = ambientTemp * 9 / 5
+                f = ambient * 9 / 5
                 f = f + 32    
                 
-                irTempF = irTemp * 9 / 5
-                irTempF = irTempF + 32
+                irT = ir * 9 / 5
+                irT = irT + 32
 
                 self.ATempDatas[sindex]["text"] = str(round(f,2)) + " f"
-                self.IRTempDatas[sindex]["text"] = str(round(irTempF,2)) + " f"
+                self.IRTempDatas[sindex]["text"] = str(round(irT,2)) + " f"
                 
                 tool.sendline('char-read-hnd 0x38')
                 index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
@@ -155,7 +155,7 @@ class MyApp:
                 root.update()
                 sindex = sindex + 1
                 
-                saveData(["ambientTemp", ambientTemp, "IR Temp", irTemp, "Humidity", humid])
+                saveData(["ambientTemp", ambient, "IR Temp", irT, "Humidity", humid])
 
             time.sleep(float(interval))
         lf.close()

@@ -29,7 +29,7 @@ def calcTmpTarget(objT, ambT):
 
 def ambientTemp(hexStr):
     rval = hexStr.split()
-    ambT = return (floatfromhex(rval[4] + rval[3]) / 128)
+    return (floatfromhex(rval[4] + rval[3]) / 128)
 
 def irTemp(hexStr):
     rval = hexStr.split()
