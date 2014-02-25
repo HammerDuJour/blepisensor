@@ -208,8 +208,8 @@ class MyApp:
         self.myParent.destroy()
         
     
-addresses = ['BC:6A:29:AB:D5:92','BC:6A:29:AB:23:DA']
-descriptions = ['Tag 1','Tag 2']
+addresses = ['BC:6A:29:AB:D5:92','BC:6A:29:AB:23:DA','BC:6A:29:AB:3B:4B', 'BC:6A:29:AB:23:F6']
+descriptions = ['Tag 1','Tag 2','Tag 3','Tag 4']
        
 root = Tk()
 myapp = MyApp(root, addresses, descriptions, 2)
