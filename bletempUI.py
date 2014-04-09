@@ -17,10 +17,9 @@ measureHumid = True
 
 def usage():
     print 'blepisensor.py Usage:'
-    print '  blepisensor.py address [interval]'
+    print '  blepisensor.py'
     print ''
-    print '  address    The address of the sensor to read.'
-    print '  interval   The reading interval in seconds.  Default is 1.'
+    print '  SensorTag addresses and labels are hardcoded into beltempUI.py'
 
   
 def saveData(data):
