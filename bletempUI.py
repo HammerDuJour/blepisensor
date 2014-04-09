@@ -37,12 +37,8 @@ def saveDataToDB(temp,ambTemp,tagAddr,ipAddr):
     connection = sqlite3.connect('/home/pi/blepimesh/data/client.db')
     cursor = connection.cursor()
     
-    cursor.execute("INSERT INTO log(tagDate) values(date('now'))")
-    cursor.execute("INSERT INTO log values('5',date('now'),time('now'),'34','43','TagAddr','')")
-
-    #"log(col,col2,col3) values(val1,val2,val3)"
-	cursor.execute("INSERT INTO log(tagDate,logDate,temp,ambTemp,tagAddr,ipAddr)\
-	VALUES(date('now'),time('now'), temp,ambTemp,tagAddr,ipAddr)")
+	cursor.execute("INSERT INTO log(tagDate,logDate,temp,ambTemp,tagAddr,ipAddr)VALUES(?,?,?,?,?,?)",
+	date('now'),time('now'), temp,ambTemp,tagAddr,ipAddr)
     
     connection.commit()
     connection.close()
