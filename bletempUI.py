@@ -3,6 +3,7 @@ import pexpect
 import sys
 import time
 import datetime
+import sqlite3
 
 from SensorTag import *
 from SensorCalcs import *
@@ -16,10 +17,9 @@ measureHumid = True
 
 def usage():
     print 'blepisensor.py Usage:'
-    print '  blepisensor.py address [interval]'
+    print '  blepisensor.py'
     print ''
-    print '  address    The address of the sensor to read.'
-    print '  interval   The reading interval in seconds.  Default is 1.'
+    print '  SensorTag addresses and labels are hardcoded into beltempUI.py'
 
   
 def saveData(data):
@@ -30,6 +30,17 @@ def saveData(data):
         f.write(",\"" + str(dataPoint) + "\"")
     f.write("\n")
     f.close()
+    
+#def saveDataToDB(data):
+def saveDataToDB(temp,ambTemp,tagAddr,ipAddr):
+    connection = sqlite3.connect('/home/pi/blepimesh/data/client.db')
+    cursor = connection.cursor()
+    
+	cursor.execute("INSERT INTO log(tagDate,logDate,temp,ambTemp,tagAddr,ipAddr)VALUES(?,?,?,?,?,?)",
+	date('now'),time('now'), temp,ambTemp,tagAddr,ipAddr)
+    
+    connection.commit()
+    connection.close()
 
 def connect(tool):
     print "Connecting to Sensor Tag"
@@ -91,6 +102,7 @@ class MyApp:
                 testIndex += 1
                 
                 saveData(["ambientTemp", ambientTemp, "IR Temp", irTemp, "Humidity", humid])
+				saveDataToDB(irT,ambient,sensorTag.mac,0)
 
             time.sleep(float(interval))
             
@@ -156,6 +168,8 @@ class MyApp:
                 sindex = sindex + 1
                 
                 saveData(["ambientTemp", ambient, "IR Temp", irT, "Humidity", humid])
+				saveDataToDB(irT,ambient,sensorTag.mac,0)
+
 
             time.sleep(float(interval))
         lf.close()
