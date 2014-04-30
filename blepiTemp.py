@@ -2,6 +2,8 @@ import pexpect
 import sys
 import time
 import datetime
+import sqlite3
+
 from SensorTag import *
 from SensorCalcs import *
 
@@ -28,8 +30,7 @@ def saveDataToDB(temp,ambTemp,tagAddr,ipAddr):
     connection = sqlite3.connect('/home/pi/blepimesh/data/client.db')
     cursor = connection.cursor()
     
-	cursor.execute("INSERT INTO log(tagDate,logDate,temp,ambTemp,tagAddr,ipAddr)VALUES(?,?,?,?,?,?)",
-	date('now'),time('now'), temp,ambTemp,tagAddr,ipAddr)
+    cursor.execute("INSERT INTO log(tagDate,logDate,temp,ambTemp,tagAddr,ipAddr)VALUES(?,?,?,?,?,?)", date('now'),time('now'), temp,ambTemp,tagAddr,ipAddr)
     
     connection.commit()
     connection.close()
@@ -47,23 +48,23 @@ def bleTempCollection(interval=1):
     tools = []
     SensorTags = []
     
-	stConn = sqlite3.connect('/home/pi/blepesensor/SensorInfo.db')
-	stCursor = stConn.cursor()
+    stConn = sqlite3.connect('/home/pi/blepisensor/SensorInfo.db')
+    stCursor = stConn.cursor()
 	
 	# Read Sensor Tag addresses from a local database
-	for row in stCursor.execute("SELECT * FROM SensorTags"):
-		print row["Address"]
-		print row["Description"]
-		lf = open(logfile, 'a')
-		tool = pexpect.spawn('gatttool -b ' + row["Address"] + ' --interactive',logfile=lf)
+    for row in stCursor.execute("SELECT * FROM SensorTags"):
+	print row[1]
+	print row[2]
+	lf = open(logfile, 'a')
+	tool = pexpect.spawn('gatttool -b ' + row[1] + ' --interactive',logfile=lf)
 		
-		tool.expect('\[LE\]>')
-		connect(tool)
+	tool.expect('\[LE\]>')
+	connect(tool)
 		
-		st = SensorTag(row["Address"],tool,row["Description"])
-		SensorTags.append(st)
+	st = SensorTag(row[1],tool,row[2])
+	SensorTags.append(st)
 	
-	stConn.close()
+    stConn.close()
 	
     # create a collection of pexpect tools
 #    for address in addresses:
@@ -97,7 +98,7 @@ def bleTempCollection(interval=1):
                 connect(tool)
                 
             saveData(["ambientTemp", ambient, "IR Temp", irT])
-			saveDataToDB(irT,ambient,sensorTag.mac,0)
+  	    saveDataToDB(irT,ambient,sensorTag.mac,0)
 			
         time.sleep(float(interval))
                 
