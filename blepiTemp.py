@@ -41,28 +41,46 @@ def connect(tool):
     tool.sendline('char-write-cmd 0x29 01')
     tool.expect('\[LE\]>')
 
-def bleTempCollection(addresses, descriptions, interval=1):
+def bleTempCollection(interval=1):
 
     print "Create Tools Variable"
     tools = []
     SensorTags = []
     
+	stConn = sqlite3.connect('/home/pi/blepesensor/SensorInfo.db')
+	stCursor = stConn.cursor()
+	
+	# Read Sensor Tag addresses from a local database
+	for row in stCursor.execute("SELECT * FROM SensorTags"):
+		print row["Address"]
+		print row["Description"]
+		lf = open(logfile, 'a')
+		tool = pexpect.spawn('gatttool -b ' + row["Address"] + ' --interactive',logfile=lf)
+		
+		tool.expect('\[LE\]>')
+		connect(tool)
+		
+		st = SensorTag(row["Address"],tool,row["Description"])
+		SensorTags.append(st)
+	
+	stConn.close()
+	
     # create a collection of pexpect tools
-    for address in addresses:
-        if logfile != '': 
-            print "Create tool with log file"
-            lf = open(logfile, 'a')
-            tool = pexpect.spawn('gatttool -b ' + address + ' --interactive',logfile=lf)
-        else:
-            print "Create tool, No log file"
-            tool = pexpect.spawn('gatttool -b ' + address + ' --interactive')        
-            
-        tool.expect('\[LE\]>')
-        connect(tool)
-        tools.append(tool) # why am I appending to a collection of tools??
-        st = SensorTag(address,tool,descriptions[i])
-        i = i + 1
-        SensorTags.append(st)
+#    for address in addresses:
+#       if logfile != '': 
+#            print "Create tool with log file"
+#            lf = open(logfile, 'a')
+#            tool = pexpect.spawn('gatttool -b ' + address + ' --interactive',logfile=lf)
+#        else:
+#            print "Create tool, No log file"
+#            tool = pexpect.spawn('gatttool -b ' + address + ' --interactive')        
+#            
+#        tool.expect('\[LE\]>')
+#        connect(tool)
+#        tools.append(tool) # why am I appending to a collection of tools??
+#        st = SensorTag(address,tool,descriptions[i])
+#        i = i + 1
+#        SensorTags.append(st)
   
     #iterate over each tool in tools and retrieve temp data
     while True:
@@ -92,9 +110,9 @@ def bleTempCollection(addresses, descriptions, interval=1):
 def main():
     if (len(sys.argv) < 2):
         # get mac addresses from file
-        addresses = ['BC:6A:29:AB:D5:92','BC:6A:29:AB:23:DA','BC:6A:29:AB:3B:4B', 'BC:6A:29:AB:23:F6']
-        descriptions = ['Tag 1','Tag 2','Tag 3','Tag 4']        
-        bleTempCollection(addresses,descriptions,sys.argv[1])
+        #addresses = ['BC:6A:29:AB:D5:92','BC:6A:29:AB:23:DA','BC:6A:29:AB:3B:4B', 'BC:6A:29:AB:23:F6']
+        #descriptions = ['Tag 1','Tag 2','Tag 3','Tag 4']        
+        bleTempCollection()
     elif (len(sys.argv) == 2):
         bleTemp(sys.argv[1])
     else:
