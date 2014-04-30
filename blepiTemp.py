@@ -59,7 +59,7 @@ def bleTempCollection(addresses, descriptions, interval=1):
             
         tool.expect('\[LE\]>')
         connect(tool)
-        tools.append(tool)
+        tools.append(tool) # why am I appending to a collection of tools??
         st = SensorTag(address,tool,descriptions[i])
         i = i + 1
         SensorTags.append(st)
