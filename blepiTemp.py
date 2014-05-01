@@ -15,7 +15,8 @@ def usage():
     print 'blepiTemp.py Usage:'
     print '  blepiTemp.py'
     print ''
-    print '  SensorTag addresses and labels are hardcoded into blepiTemp.py'
+    print '  SensorTag addresses and labels are stored in SensorInfo.db'
+    print '  See BlepiInit.py for sample code'
   
 def saveData(data):
     timestamp = datetime.datetime.now().strftime("%y-%m-%d-%H:%M:%S")
@@ -69,24 +70,8 @@ def bleTempCollection(interval=1):
 	
     stConn.close()
 	
-    # create a collection of pexpect tools
-#    for address in addresses:
-#       if logfile != '': 
-#            print "Create tool with log file"
-#            lf = open(logfile, 'a')
-#            tool = pexpect.spawn('gatttool -b ' + address + ' --interactive',logfile=lf)
-#        else:
-#            print "Create tool, No log file"
-#            tool = pexpect.spawn('gatttool -b ' + address + ' --interactive')        
-#            
-#        tool.expect('\[LE\]>')
-#        connect(tool)
-#        tools.append(tool) # why am I appending to a collection of tools??
-#        st = SensorTag(address,tool,descriptions[i])
-#        i = i + 1
-#        SensorTags.append(st)
-  
-    #iterate over each tool in tools and retrieve temp data
+
+    #iterate over each Sensor Tag object and retrieve temp data
     while True:
         for sensorTag in SensorTags:
             
@@ -115,9 +100,6 @@ def bleTempCollection(interval=1):
 
 def main():
     if (len(sys.argv) < 2):
-        # get mac addresses from file
-        #addresses = ['BC:6A:29:AB:D5:92','BC:6A:29:AB:23:DA','BC:6A:29:AB:3B:4B', 'BC:6A:29:AB:23:F6']
-        #descriptions = ['Tag 1','Tag 2','Tag 3','Tag 4']        
         bleTempCollection()
     elif (len(sys.argv) == 2):
         bleTemp(sys.argv[1])
