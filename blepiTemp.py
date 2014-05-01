@@ -39,10 +39,10 @@ def connect(tool):
     print "Connecting to Sensor Tag"
     tool.sendline('connect')
     index = tool.expect (['Connection successful', pexpect.TIMEOUT, pexpect.EOF])
-    if index == 0
+    if index == 0:
     	tool.sendline('char-write-cmd 0x29 01')
     	tool.expect('\[LE\]>')
-    elif index == 1
+    elif index == 1:
     	# do nothing
 
 def bleTempCollection(interval=1):
