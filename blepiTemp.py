@@ -38,9 +38,12 @@ def saveDataToDB(temp,ambTemp,tagAddr,ipAddr):
 def connect(tool):
     print "Connecting to Sensor Tag"
     tool.sendline('connect')
-    tool.expect('Connection successful')   
-    tool.sendline('char-write-cmd 0x29 01')
-    tool.expect('\[LE\]>')
+    index = tool.expect (['Connection successful', pexpect.TIMEOUT, pexpect.EOF])
+    if index == 0
+    	tool.sendline('char-write-cmd 0x29 01')
+    	tool.expect('\[LE\]>')
+    elif index == 1
+    	# do nothing
 
 def bleTempCollection(interval=1):
 
@@ -94,12 +97,11 @@ def bleTempCollection(interval=1):
                 hexStr = tool.after
                 ambient = ambientTemp(hexStr)
                 ir = irTemp(hexStr)
+                saveData(["ambientTemp", ambient, "IR Temp", irT])
+  	    	saveDataToDB(irT,ambient,sensorTag.mac,0)
             elif index == 1:
                 connect(tool)
                 
-            saveData(["ambientTemp", ambient, "IR Temp", irT])
-  	    saveDataToDB(irT,ambient,sensorTag.mac,0)
-			
         time.sleep(float(interval))
                 
     # will this crash if lf is not created ?
