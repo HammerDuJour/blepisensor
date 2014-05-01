@@ -42,8 +42,6 @@ def connect(tool):
     if index == 0:
     	tool.sendline('char-write-cmd 0x29 01')
     	tool.expect('\[LE\]>')
-    elif index == 1:
-    	# do nothing
 
 def bleTempCollection(interval=1):
 
