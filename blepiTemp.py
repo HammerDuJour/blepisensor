@@ -30,7 +30,7 @@ def saveDataToDB(temp,ambTemp,tagAddr,ipAddr):
     connection = sqlite3.connect('/home/pi/blepimesh/data/client.db')
     cursor = connection.cursor()
     
-    cursor.execute("INSERT INTO log(tagDate,logDate,temp,ambTemp,tagAddr,ipAddr)VALUES(?,?,?,?,?,?)", date('now'),time('now'), temp,ambTemp,tagAddr,ipAddr)
+    #cursor.execute("INSERT INTO log(tagDate,logDate,temp,ambTemp,tagAddr,ipAddr) VALUES(?,?,?,?,?,?), 1, 1, temp,ambTemp,tagAddr,ipAddr")
     
     connection.commit()
     connection.close()
@@ -38,10 +38,12 @@ def saveDataToDB(temp,ambTemp,tagAddr,ipAddr):
 def connect(tool):
     print "Connecting to Sensor Tag"
     tool.sendline('connect')
-    index = tool.expect (['Connection successful', pexpect.TIMEOUT, pexpect.EOF])
+    index = tool.expect (['Connection successful', pexpect.TIMEOUT, pexpect.EOF],3)
     if index == 0:
     	tool.sendline('char-write-cmd 0x29 01')
     	tool.expect('\[LE\]>')
+    else:
+	tool = None
 
 def bleTempCollection(interval=1):
 
@@ -89,16 +91,19 @@ def bleTempCollection(interval=1):
         for sensorTag in SensorTags:
             
             tool = sensorTag.control
-            tool.sendline('char-read-hnd 0x25')
-            index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
-            if index == 0:
-                hexStr = tool.after
-                ambient = ambientTemp(hexStr)
-                ir = irTemp(hexStr)
-                saveData(["ambientTemp", ambient, "IR Temp", irT])
-  	    	saveDataToDB(irT,ambient,sensorTag.mac,0)
-            elif index == 1:
-                connect(tool)
+            if tool is None:
+  		print "Tool is None"
+            else:
+		tool.sendline('char-read-hnd 0x25')
+		index = tool.expect (['descriptor: .*', 'Disconnected', pexpect.EOF, pexpect.TIMEOUT],3)
+                if index == 0:
+                    hexStr = tool.after
+                    ambient = ambientTemp(hexStr)
+                    irT = irTemp(hexStr)
+                    saveData(["ambientTemp", ambient, "IR Temp", irT])
+  	    	    saveDataToDB(irT,ambient,sensorTag.mac,0)
+                elif index == 1:
+                    connect(tool)
                 
         time.sleep(float(interval))
                 
