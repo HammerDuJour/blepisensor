@@ -17,6 +17,11 @@ def usage():
     print ''
     print '  SensorTag addresses and labels are stored in SensorInfo.db'
     print '  See BlepiInit.py for sample code'
+
+def unix_time(dt):
+    epoch = datetime.datetime.utcfromtimestamp(0)
+    delta = dt - epoch
+    return delta.total_seconds()
   
 def saveData(data):
     timestamp = datetime.datetime.now().strftime("%y-%m-%d-%H:%M:%S")
@@ -31,7 +36,9 @@ def saveDataToDB(temp,ambTemp,tagAddr,ipAddr):
     connection = sqlite3.connect('/home/pi/blepimesh/data/client.db')
     cursor = connection.cursor()
     
-    data = (1, 1, temp,ambTemp,tagAddr,ipAddr)
+    unix_time(datetime.datetime.now())
+    
+    data = (unix_time, 1, temp,ambTemp,tagAddr,ipAddr)
     cursor.execute('INSERT INTO log (tagDate,logDate,temp,ambTemp,tagAddr,ipAddr) VALUES (?,?,?,?,?,?)', data)
     #cursor.execute("INSERT INTO log(tagDate,logDate,temp,ambTemp,tagAddr,ipAddr) VALUES(1, 1, temp,ambTemp,tagAddr,ipAddr)")
     
