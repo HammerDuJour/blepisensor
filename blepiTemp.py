@@ -22,6 +22,9 @@ def unix_time(dt):
     epoch = datetime.datetime.utcfromtimestamp(0)
     delta = dt - epoch
     return delta.total_seconds()
+
+def unix_time_millis(dt):
+    return unix_time(dt) * 1000.0    
   
 def saveData(data):
     timestamp = datetime.datetime.now().strftime("%y-%m-%d-%H:%M:%S")
@@ -36,7 +39,7 @@ def saveDataToDB(temp,ambTemp,tagAddr,ipAddr):
     connection = sqlite3.connect('/home/pi/blepimesh/data/client.db')
     cursor = connection.cursor()
     
-    var = unix_time(datetime.datetime.now())
+    var = unix_time_millis(datetime.datetime.now())
     
     data = (var, 1, temp,ambTemp,tagAddr,ipAddr)
     cursor.execute('INSERT INTO log (tagDate,logDate,temp,ambTemp,tagAddr,ipAddr) VALUES (?,?,?,?,?,?)', data)
